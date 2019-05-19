@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: instancing
+  m_Name: Firefly
   m_Shader: {fileID: 4800000, guid: e581612117ec3924cadefa2f774bfd6b, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -73,6 +73,6 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 1, g: 0, b: 0, a: 1}
-    - _Emission: {r: 0.2783019, g: 1, b: 0.7298374, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Emission: {r: 0.4481132, g: 1, b: 0.7967409, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

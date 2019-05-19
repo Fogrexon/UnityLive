@@ -1,17 +1,72 @@
-﻿#pragma kernel KernelFunction_A
-#pragma kernel KernelFunction_B
+﻿#pragma kernel KernelPosition
 
-RWStructuredBuffer<float> floatBuffer;
-float floatValue;
-
-[numthreads(4,1,1)]
-void KernelFunction_A(uint3 groupID : SV_GroupID, uint3 groupThreadID : SV_GroupThreadID )
+struct FireflyData
 {
-    floatBuffer[groupThreadID.x] = float(groupThreadID.x) * floatValue;
+    float3 position;
+};
+
+#define SIMULATION_BLOCK_SIZE 256
+
+StructuredBuffer<FireflyData>   _FireflyDataBufferRead;
+RWStructuredBuffer<FireflyData> _FireflyDataBufferWrite;
+float _Speed;
+int MaxFireflyObjectNum;
+float3 _ObjectScale;
+float _Time;
+
+groupshared FireflyData fireflies[SIMULATION_BLOCK_SIZE];
+
+
+
+float rand(float3 co)
+{
+	return frac(sin(dot(co.xyz, float3(12.9898, 78.233, 56.787))) * 43758.5453);
 }
 
-[numthreads(4,1,1)]
-void KernelFunction_B(uint3 groupID : SV_GroupID, uint3 groupThreadID : SV_GroupThreadID)
+float noise(float3 pos)
 {
-    floatBuffer[groupThreadID.x] += 1.0f;
+	float3 ip = floor(pos);
+	float3 fp = smoothstep(0, 1, frac(pos));
+	float4 a = float4(
+		rand(ip + float3(0, 0, 0)),
+		rand(ip + float3(1, 0, 0)),
+		rand(ip + float3(0, 1, 0)),
+		rand(ip + float3(1, 1, 0)));
+	float4 b = float4(
+		rand(ip + float3(0, 0, 1)),
+		rand(ip + float3(1, 0, 1)),
+		rand(ip + float3(0, 1, 1)),
+		rand(ip + float3(1, 1, 1)));
+ 
+	a = lerp(a, b, fp.z);
+	a.xy = lerp(a.xy, a.zw, fp.y);
+	return lerp(a.x, a.y, fp.x);
+}
+
+float perlin(float3 pos)
+{
+	return 
+		(noise(pos) +
+		noise(pos * 2 ) +
+		noise(pos * 4) +
+		noise(pos * 8) +
+		noise(pos * 16) +
+		noise(pos * 32) ) / 6;
+}
+
+[numthreads(SIMULATION_BLOCK_SIZE, 1, 1)]
+void KernelPosition
+(
+	uint3 DTid : SV_DispatchThreadID // スレッド全体で固有のID
+)
+{
+	const unsigned int P_ID = DTid.x;          // インデックスを取得
+											           
+	FireflyData b = _FireflyDataBufferWrite[P_ID];   // 現在のBoidデータを読み込む
+
+    float p = perlin(DTid.xyz + float3(_Time,_Time,_Time));
+	
+    b.position += float3(cos(p*24)*_Speed,sin(p*13)*_Speed,sin(p*42)*_Speed);
+											           
+	_FireflyDataBufferWrite[P_ID] = b;            // 計算結果を書き込む
 }
