@@ -58,8 +58,11 @@
       {
         g2f o;
         o.color = float4(1.0,1.0,1.0,1.0);
+        float3 pos = v[0].vertex;
         float3 norm;
         norm = o.normal = v[0].normal;
+
+        norm *= abs(sin(pos.y*10+pos.x*10+_Time.y*1.3)*cos(_Time.y));
 
         float3 v1 = v[0].vertex + _Face * norm;
         float3 v2 = v[1].vertex + _Face * norm;

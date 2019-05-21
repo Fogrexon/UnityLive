@@ -6,11 +6,11 @@
 
 	}
 	SubShader{
-		Tags { "RenderType" = "Opaque" }
+		Tags { "RenderType" = "Transparent" }
 		LOD 200
 
 		CGPROGRAM
-		#pragma surface surf Standard
+		#pragma surface surf Standard alpha
 		#pragma target 3.0
 
 		struct Input {
@@ -38,8 +38,9 @@
 			/*if ( a < _Width || b < _Width) {
 				o.Albedo = fixed4(1,1,1, 1);
 			} else {*/
-				float c = pow(a/_Radius,4) + pow(b/_Radius,4)-0.7;
-				o.Albedo = box(IN,max(c,0));
+				float c = pow(a/_Radius,4) + pow(b/_Radius,4)-0.5;
+				o.Emission = box(IN,max(c,0));
+				o.Alpha = c;
 			//}
 		}
 		ENDCG
