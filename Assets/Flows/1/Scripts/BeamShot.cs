@@ -7,6 +7,7 @@ public class BeamShot : MonoBehaviour
     public GameObject beam;
 
     public float duration = 1.0f;
+    public bool isParent = true;
     float prevTime;
     // Start is called before the first frame update
     void Start()
@@ -19,7 +20,7 @@ public class BeamShot : MonoBehaviour
     {
         if(Time.time - prevTime > duration ){
             GameObject b = Instantiate(beam, this.transform.position, Quaternion.identity);
-            b.transform.parent = this.transform;
+           if(isParent) b.transform.parent = this.transform;
             b.transform.Rotate(this.transform.eulerAngles);
             prevTime = Time.time;
         }

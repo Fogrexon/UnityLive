@@ -1,4 +1,4 @@
-﻿Shader "Custom/VJ/Burst"
+﻿Shader "Custom/VJ/Pushed"
 {
   Properties 
   {
@@ -53,6 +53,10 @@
         return o;
       }
 
+      float rand(float2 co){
+				return frac(sin(dot(co.xy, float2(12.9898,78.233))) * 43758.5453);
+			}
+
       [maxvertexcount(22)]
       void geom(triangle v2g v[3], inout TriangleStream<g2f> stream)
       {
@@ -62,7 +66,7 @@
         float3 norm;
         norm = o.normal = v[0].normal;
 
-        norm *= abs(sin(pos.y*10+pos.x*10+_Time.y*1.3)*cos(_Time.y));
+        norm *= 0.5 - abs(cos(_Time.y * rand(float2(pos.x+pos.y, pos.z+pos.x)))) * ( tanh(length(pos)));
 
         float3 v1 = v[0].vertex + _Face * norm;
         float3 v2 = v[1].vertex + _Face * norm;
