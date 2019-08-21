@@ -1,12 +1,8 @@
-﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
-
-Shader "Custom/OtogeEffects/pilesTwist"
+﻿Shader "Unlit/NewUnlitShader"
 {
     Properties
     {
-        _Color ("Color", Color) = (1.0, 1.0, 1.0, 1.0)
-        _Emission ("Emission", Color) = (1.0, 1.0, 1.0, 1.0)
-        _BPM ("BPM", Float) = 170.1
+        _MainTex ("Texture", 2D) = "white" {}
     }
     SubShader
     {
@@ -34,23 +30,16 @@ Shader "Custom/OtogeEffects/pilesTwist"
                 float2 uv : TEXCOORD0;
                 UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
-                float3 wpos : TEXCOORD1;
             };
 
-            half4 _Color;
-            half4 _Emission;
-            float _BPM;
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
 
             v2f vert (appdata v)
             {
                 v2f o;
-                float4 vert = v.vertex;
-                float theta = vert.y*0.3 * sin(_Time.y);
-                float2x2 rot = float2x2(cos(theta),-sin(theta),sin(theta),cos(theta)); 
-                vert.xz = mul(rot, vert.xz);
-                o.vertex = UnityObjectToClipPos(vert);
-                o.uv = v.uv;
-                o.wpos = mul (unity_ObjectToWorld, v.vertex).xyz;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
@@ -58,14 +47,12 @@ Shader "Custom/OtogeEffects/pilesTwist"
             fixed4 frag (v2f i) : SV_Target
             {
                 // sample the texture
-                float f = saturate(sin(i.uv.x*100)*0.5 + cos(i.uv.y*100)*0.5);
-                fixed4 col = lerp(half4(0.0, 0.0, 0.0, 1.0), _Color + _Emission,f);//max(0.0, sin(i.wpos.z*5.0 + _Time.y * _BPM / 60.0 * 6.283184)));
+                fixed4 col = tex2D(_MainTex, i.uv);
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
             }
             ENDCG
         }
-
     }
 }
