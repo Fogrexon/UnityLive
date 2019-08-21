@@ -54,7 +54,7 @@ public class NotesManager : MonoBehaviour
 
     void AddNote()
     {
-        while(readline < ng.notesList.Count && ng.notesList[readline].time < ac.time + 2f)
+        while(readline < ng.notesList.Count && ng.notesList[readline].time < ac.time + 100f / speed)
         {
             GameObject g = Instantiate(note);
             g.transform.parent = notes;
