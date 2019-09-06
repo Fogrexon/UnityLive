@@ -57,16 +57,21 @@ float perlin(float3 pos)
 [numthreads(SIMULATION_BLOCK_SIZE, 1, 1)]
 void KernelPosition
 (
-	uint3 DTid : SV_DispatchThreadID // スレッド全体で固有のID
+	uint3 DTid : SV_DispatchThreadID
 )
 {
-	const unsigned int P_ID = DTid.x;          // インデックスを取得
+	const unsigned int P_ID = DTid.x;
 											           
-	FireflyData b = _FireflyDataBufferWrite[P_ID];   // 現在のBoidデータを読み込む
-
-    float p = perlin(DTid.xyz + float3(_Time,_Time,_Time));
+	FireflyData b = _FireflyDataBufferWrite[P_ID];
 	
-    b.position += float3(cos(p*24)*_Speed,sin(p*13)*_Speed,sin(p*42)*_Speed);
+    b.position += float3(sin(_Time*0.5)*0.3,sin(_Time*0.2)*0.3,sin(_Time*0.3)*0.3);
+
+	if(b.position.x > 80) b.position.x = -80;
+	if(b.position.y > 80) b.position.y = -80;
+	if(b.position.z > 80) b.position.z = -80;
+	if(b.position.x < -80) b.position.x = 80;
+	if(b.position.y < -80) b.position.y = 80;
+	if(b.position.z < -80) b.position.z = 80;
 											           
-	_FireflyDataBufferWrite[P_ID] = b;            // 計算結果を書き込む
+	_FireflyDataBufferWrite[P_ID] = b;
 }

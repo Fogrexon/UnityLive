@@ -1,4 +1,6 @@
-﻿Shader "Custom/VJ/Burst"
+﻿// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+
+Shader "Custom/VJ/Burst"
 {
   Properties 
   {
@@ -40,7 +42,9 @@
         float4 vertex : SV_POSITION;
         float3 color : TEXCOORD0;
         float3 normal : NORMAL;
-        float3 uv : TEXCOORD2;
+        float3 uv : TEXCOORD1;
+        float3 emission : TEXCOORD2;
+        float3 alpha : TEXCOORD3;
       };
 
       float _Face;
@@ -112,14 +116,17 @@
         float4 v2 =(v[1].vertex);
         float4 v3 = (v[2].vertex);
         float4 center = (v1 + v2 + v3) / 3;
-        float prog =  easeInExpo(Normal( 1 - abs(sin( _Time.y / 10. + center.y*_Progress))));
-        float3 rad = float3((rand(v1)*2-1)*6.283,(rand(v2)*2-1)*6.283,(rand(v3)*2-1)*6.283);
-        float4 pos = float4(CalNorm(v1.xyz,v2.xyz,v3.xyz),1)*prog*_Scatter;// + float4((rand(v1+rad)*2-1)*_Scatter*_ScaleBox.x*prog,(rand(v2+rad)*2-1)*_Scatter*_ScaleBox.y*prog,(rand(v3+rad)*2-1)*_Scatter*_ScaleBox.z*prog,1);
+        float len = pow(max(length(mul(unity_ObjectToWorld, center).xyz),0),1);
+        float prog = _Progress;
+        float3 rad = float3((rand(v1)*2-1)*3.1415*saturate(len),(rand(v2)*2-1)*3.1415*saturate(len),(rand(v3)*2-1)*3.1415*saturate(len));
+        float4 pos = float4( v[0].normal * len * 0.0005, 0) * prog * rand(v1);
         float4x4 mat = eulerAnglesToRotationMatrix(rad * prog);
-        float4 rv1 = mul(mat, v1 - center) + pos + center;
-        float4 rv2 = mul(mat, v2 - center) + pos + center;
-        float4 rv3 = mul(mat, v3 - center) + pos + center;
+        float4 rv1 = mul(mat, v1 - center)*(1 - prog * 0.7 * saturate(len)) + pos + center;
+        float4 rv2 = mul(mat, v2 - center)*(1 - prog * 0.7 * saturate(len)) + pos + center;
+        float4 rv3 = mul(mat, v3 - center)*(1 - prog * 0.7 * saturate(len)) + pos + center;
         o.normal = CalNorm(rv1,rv2,rv3);
+        o.emission = prog *2* _Emission;
+        o.alpha = float3(1 - prog, 1 - prog, 1 - prog);
 
         o.vertex = UnityObjectToClipPos(rv1);
         o.uv = float3(v[0].uv,1);
@@ -138,7 +145,7 @@
       {
         half nl = max(0, dot(i.normal, _WorldSpaceLightPos0.xyz));
         fixed4 col;
-        col = fixed4(tex2D(_MainTex, i.uv).xyz * nl,1)+_Emission;
+        col = fixed4(tex2D(_MainTex, i.uv).xyz * nl,i.alpha.x)+ half4(i.emission,0);
         return col;
       }
       ENDCG
