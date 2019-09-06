@@ -45,7 +45,7 @@ Shader "Custom/OtogeEffects/pilesTwist"
             {
                 v2f o;
                 float4 vert = v.vertex;
-                float theta = vert.y*0.3 * sin(_Time.y);
+                float theta = vert.y*0.3 * sin(_Time.y*0.783) + cos(_Time.y*1.135);
                 float2x2 rot = float2x2(cos(theta),-sin(theta),sin(theta),cos(theta)); 
                 vert.xz = mul(rot, vert.xz);
                 o.vertex = UnityObjectToClipPos(vert);

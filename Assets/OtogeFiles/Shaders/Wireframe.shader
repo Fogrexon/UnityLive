@@ -11,7 +11,7 @@
 
     // 0: wireframe pass
     Pass {
-      Tags { "RenderType"="Transparent" "Queue"="Transparent" }
+      Tags { "RenderType"="Opaque" "Queue"="Geometry" }
     LOD 100
       Cull Off
       Blend SrcAlpha OneMinusSrcAlpha
