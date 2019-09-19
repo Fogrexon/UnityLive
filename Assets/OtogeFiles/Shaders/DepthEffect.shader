@@ -57,7 +57,7 @@
                 
                 fixed4 texcol = tex2D(_MainTex, i.uv);
 
-                float b = _Base*0.4 + sin(i.uv.x*100.0 + i.uv.y*100.0)*0.6;
+                float b = _Base*0.4;
 
                 fixed4 col = texcol * b + lerp(_Color, texcol, pow(saturate(-0.2 + depth*50), 2)) * (1 - b);
 
