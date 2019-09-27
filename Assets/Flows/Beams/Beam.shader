@@ -1,17 +1,14 @@
-﻿Shader "Unlit/Notes"
+﻿Shader "Custom/Live/Beam/Beam"
 {
     Properties
     {
-        _MainColor("MainColor", Color) = (1.0, 1.0, 1.0, 1.0)
-        _Dissolve("Dissolve Texture", 2D) = "white" {}
-        _Threshold("Threshold", Float) = 0.6
+        _MainColor("MainColor", Color) = (1.0,1.0,1.0,1.0)
     }
     SubShader
     {
-        Tags { "RenderType"="Transparent" "Queue"="Transparent" }
+        Tags { "RenderType"="Opaque" "Queue"="Transparent" }
         LOD 100
-        Zwrite On
-        Blend SrcAlpha OneMinusSrcAlpha
+        Blend SrcAlpha OneMinusSrcAlpha 
 
         Pass
         {
@@ -27,6 +24,7 @@
             {
                 float4 vertex : POSITION;
                 float2 uv : TEXCOORD0;
+                float3 normal : NORMAL;
             };
 
             struct v2f
@@ -34,41 +32,30 @@
                 float2 uv : TEXCOORD0;
                 UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
+                float3 normal : TEXCOORD1;
+                float3 worldPos : TEXCOORD2;
             };
 
-            sampler2D _Dissolve;
             half4 _MainColor;
-            float _Threshold;
 
             v2f vert (appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                o.uv = v.uv;//TRANSFORM_TEX(v.uv, _MainTex);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex);
+                o.uv = v.uv;
+                o.normal = UnityObjectToWorldNormal(v.normal);
                 UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
             fixed4 frag (v2f i) : SV_Target
             {
+                float3 viewDir = normalize(i.worldPos - _WorldSpaceCameraPos.xyz);
+                float lim = pow(1.0 - abs(dot(viewDir, i.normal)),5.0);
                 // sample the texture
-                
-                float2 delta = float2(0.0,_Time.y)*0.4;
-                float d = abs(length((i.uv - float2(0.5,0.5))*2.0) - 0.7) + tex2D(_Dissolve, i.uv+delta).x*0.2;
-                float d2 = d < _Threshold ? 1.0:0.0;
-
-                fixed4 col = fixed4(_MainColor.xyz*1.5*(1.0 - d*3.0), d2);
-                
-
-                /*
-                float d = 1.0 - abs(length((i.uv - float2(0.5,0.5))*2.0) - 0.5)*3.0;
-                //float d2 = d < _Threshold ? 1.0:0.0;
-                d = saturate(d);
-
-                fixed4 col = fixed4(_MainColor.xyz*1.5*d, d);
-
-                */
-                
+                fixed4 col = _MainColor * 1.5;
+                col.a = lim*2.0 + 0.2;
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
