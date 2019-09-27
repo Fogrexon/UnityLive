@@ -15,8 +15,9 @@ namespace StateHolder
     {
         public static string songname = "BrainPower";
         public static float BPM = 170f;
-        public static Note[] notesdataL;
-        public static Note[] notesdataR;
+        public static float Speed = 2f;
+        public static Note[] NotesDataL;
+        public static Note[] NotesDataR;
 
         public static float GetRhythm()
         {

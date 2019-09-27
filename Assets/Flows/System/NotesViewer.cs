@@ -14,12 +14,6 @@ public class NotesViewer : MonoBehaviour
         nc = GetComponent<NotesController>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void GenerateNoteObjects()
     {
         notesL = new GameObject[nc.notesdataL.Length];
@@ -29,14 +23,15 @@ public class NotesViewer : MonoBehaviour
         {
             if(nc.notesdataL[i].type != 0)
             {
-                notesL[i] = Instanciate(noteL);
+                notesL[i] = Instantiate(noteL);
+                notesL[i].transform.position = new Vector3();
                 notesL[i].SetActive(false);
             }else{
                 notesL[i] = null;
             }
             if(nc.notesdataR[i].type != 0)
             {
-                notesR[i] = Instanciate(noteLR);
+                notesR[i] = Instantiate(noteR);
                 notesR[i].SetActive(false);
             }else{
                 notesR[i] = null;
@@ -48,5 +43,16 @@ public class NotesViewer : MonoBehaviour
     {
         if(!!notesL[gpos]) notesL[gpos].SetActive(false);
         if(!!notesR[gpos]) notesR[gpos].SetActive(false);
+    }
+
+    public void MoveNotes(int start, int end, float t, float d)
+    {
+        float p;
+        for(int i=start;i<end+1;i++)
+        {
+            p = 1.0f + (((float)i)*d - t) *  StateHolder.Speed;
+            if(!!notesL[i]) notesL[i].transform.position.z = p;
+            if(!!notesR[i]) notesR[i].transform.position.z = p;
+        }
     }
 }

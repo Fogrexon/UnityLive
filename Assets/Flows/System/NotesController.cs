@@ -42,24 +42,24 @@ public class NotesController : MonoBehaviour
         int ep2 = Mathf.FloorToInt((source.time) / delta);
         if(ep2 < notesdata.Length && ep2 != generatePos)
         {
-            CheckNotes(generatePos);
+            CheckNotes(endPos);
             endPos = ep2;
         }
-
+        nv.MoveNotes(endPos, generatePos, source.time, delta);
     }
 
-    void CheckNotes(int gpos)
+    void CheckNotes(int epos)
     {
-        if(notesdataL[gpos].type != 0){
-            if(Vector2.Distance(handL.position.xy, notesdataL[gpos]) < 0.3f)
+        if(notesdataL[epos].type != 0){
+            if(Vector2.Distance(handL.position.xy, notesdataL[epos]) < 0.3f)
             {
-                count += 100;
+                score += 100;
             }
         }
-        if(notesdataR[gpos].type != 0){
-            if(Vector2.Distance(handR.position.xy, notesdataR[gpos]) < 0.3f)
+        if(notesdataR[epos].type != 0){
+            if(Vector2.Distance(handR.position.xy, notesdataR[epos]) < 0.3f)
             {
-                count += 100;
+                score += 100;
             }
         }
         nv.DestroyNotes();
