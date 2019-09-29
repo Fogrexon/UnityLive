@@ -9,7 +9,7 @@ public class NotesViewer : MonoBehaviour
     public GameObject noteR;
     GameObject[] notesL;
     GameObject[] notesR;
-    void Start()
+    public void Initialize()
     {
         nc = GetComponent<NotesController>();
     }
@@ -18,13 +18,15 @@ public class NotesViewer : MonoBehaviour
     {
         notesL = new GameObject[nc.notesdataL.Length];
         notesR = new GameObject[nc.notesdataR.Length];
+        Vector2 nl,nr;
 
         for(int i=0;i<nc.notesdataL.Length;i++)
         {
             if(nc.notesdataL[i].type != 0)
             {
                 notesL[i] = Instantiate(noteL);
-                notesL[i].transform.position = new Vector3();
+                nl = nc.notesdataL[i].pos;
+                notesL[i].transform.position = new Vector3(nl.x,nl.y,0.0f) * StateHolder.PlaySize + StateHolder.BasePosition;
                 notesL[i].SetActive(false);
             }else{
                 notesL[i] = null;
@@ -32,6 +34,8 @@ public class NotesViewer : MonoBehaviour
             if(nc.notesdataR[i].type != 0)
             {
                 notesR[i] = Instantiate(noteR);
+                nr = nc.notesdataR[i].pos;
+                notesR[i].transform.position = new Vector3(nr.x,nr.y,0.0f) * StateHolder.PlaySize + StateHolder.BasePosition;
                 notesR[i].SetActive(false);
             }else{
                 notesR[i] = null;
@@ -47,12 +51,24 @@ public class NotesViewer : MonoBehaviour
 
     public void MoveNotes(int start, int end, float t, float d)
     {
+        Debug.Log(d);
         float p;
-        for(int i=start;i<end+1;i++)
+        Vector3 pos;
+        for(int i=start;i<end;i++)
         {
             p = 1.0f + (((float)i)*d - t) *  StateHolder.Speed;
-            if(!!notesL[i]) notesL[i].transform.position.z = p;
-            if(!!notesR[i]) notesR[i].transform.position.z = p;
+            if(!!notesL[i]){
+                pos = notesL[i].transform.position;
+                pos.z = p + StateHolder.BasePosition.z;
+                notesL[i].transform.position = pos;
+                notesL[i].SetActive(true);
+            }
+            if(!!notesR[i]){
+                pos = notesR[i].transform.position;
+                pos.z = p + StateHolder.BasePosition.z;
+                notesR[i].transform.position = pos;
+                notesR[i].SetActive(true);
+            }
         }
     }
 }

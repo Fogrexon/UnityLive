@@ -1,23 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-namespace StateHolder
-{
-
-    public struct Note
-    {
-        public int type;
-        public Vector2 pos;
-    }
 
     public class StateHolder : MonoBehaviour
     {
-        public static string songname = "BrainPower";
-        public static float BPM = 170f;
-        public static float Speed = 2f;
+        public static string SongName = "BrainPower";
+        public static float BPM = 60f;
+        public static float Offset;
+        public static float Speed = 5f;
         public static Note[] NotesDataL;
         public static Note[] NotesDataR;
+        
+        public static Vector3 BasePosition = new Vector3(0.0f, 1.0f, 2f);
+        public static float PlaySize = 0.5f;
 
         public static float GetRhythm()
         {
@@ -25,4 +22,3 @@ namespace StateHolder
         }
     }
 
-}

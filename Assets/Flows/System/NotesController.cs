@@ -15,13 +15,14 @@ public class NotesController : MonoBehaviour
     public int endPos;
     AudioSource source;
     NotesViewer nv;
-    void Start()
+    public void Initialize()
     {
         score = 0;
         notesdataL = StateHolder.NotesDataL;
         notesdataR = StateHolder.NotesDataR;
         
         nv = GetComponent<NotesViewer>();
+        nv.Initialize();
         nv.GenerateNoteObjects();
         bpm = StateHolder.BPM;
         delta = 60f / bpm;
@@ -34,34 +35,35 @@ public class NotesController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        int gp2 = Mathf.FloorToInt((source.time + 20f) / delta);
-        if(gp2 < notesdata.Length && gp2 != generatePos)
+        float t = Mathf.Max(source.time - StateHolder.Offset, 0.0f);
+        int gp2 = Mathf.Min(Mathf.FloorToInt((t + 10f) / delta), notesdataL.Length);
+        if(gp2 != generatePos)
         {
             generatePos = gp2;
         }
-        int ep2 = Mathf.FloorToInt((source.time) / delta);
-        if(ep2 < notesdata.Length && ep2 != generatePos)
+        int ep2 = Mathf.Min(Mathf.FloorToInt(t / delta), notesdataL.Length);
+        if(ep2 < notesdataL.Length && ep2 != endPos)
         {
             CheckNotes(endPos);
             endPos = ep2;
         }
-        nv.MoveNotes(endPos, generatePos, source.time, delta);
+        nv.MoveNotes(endPos, generatePos, t, delta);
     }
 
     void CheckNotes(int epos)
     {
         if(notesdataL[epos].type != 0){
-            if(Vector2.Distance(handL.position.xy, notesdataL[epos]) < 0.3f)
+            if(Vector2.Distance(new Vector2(handL.position.x,handL.position.y), notesdataL[epos].pos) < 0.3f)
             {
                 score += 100;
             }
         }
         if(notesdataR[epos].type != 0){
-            if(Vector2.Distance(handR.position.xy, notesdataR[epos]) < 0.3f)
+            if(Vector2.Distance(new Vector2(handR.position.x,handR.position.y), notesdataR[epos].pos) < 0.3f)
             {
                 score += 100;
             }
         }
-        nv.DestroyNotes();
+        nv.DestroyNotes(epos);
     }
 }

@@ -48,7 +48,7 @@ public class BeamShooter : MonoBehaviour
     void SwitchLaser()
     {
         int pointer = Mathf.FloorToInt((Time.time - startTime) / (delta * duration));
-        if(pointer == childBeam.Length) 
+        if(pointer == childBeam.Length)
         {
             moveLaser = -2;
             return;
