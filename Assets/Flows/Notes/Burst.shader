@@ -8,7 +8,7 @@ Shader "Custom/VJ/Burst"
     _MainTex("MainTex", 2D) = "white"{}
     _Emission("Emission", Color) = (1,1,1,1)
     _ScaleBox("ScaleBox", Vector) = (1,1,1,1)
-    _Progress("Progress", Range(0,1)) = 1
+    _Progress("Progress", Range(0,1)) = 1.0
     _Scatter("Scatter", Float) = 1
   }
   SubShader
@@ -119,13 +119,13 @@ Shader "Custom/VJ/Burst"
         float len = pow(max(length(mul(unity_ObjectToWorld, center).xyz),0),1);
         float prog = _Progress;
         float3 rad = float3((rand(v1)*2-1)*3.1415*saturate(len),(rand(v2)*2-1)*3.1415*saturate(len),(rand(v3)*2-1)*3.1415*saturate(len));
-        float4 pos = float4( v[0].normal * len * 0.0005, 0) * prog * rand(v1);
+        float4 pos = float4( v[0].normal * len, 0) * prog * rand(v1);
         float4x4 mat = eulerAnglesToRotationMatrix(rad * prog);
-        float4 rv1 = mul(mat, v1 - center)*(1 - prog * 0.7 * saturate(len)) + pos + center;
-        float4 rv2 = mul(mat, v2 - center)*(1 - prog * 0.7 * saturate(len)) + pos + center;
-        float4 rv3 = mul(mat, v3 - center)*(1 - prog * 0.7 * saturate(len)) + pos + center;
+        float4 rv1 = mul(mat, v1 - center)*(1 - prog) + pos + center;
+        float4 rv2 = mul(mat, v2 - center)*(1 - prog) + pos + center;
+        float4 rv3 = mul(mat, v3 - center)*(1 - prog) + pos + center;
         o.normal = CalNorm(rv1,rv2,rv3);
-        o.emission = prog *2* _Emission;
+        o.emission = _Emission * 1.3;
         o.alpha = float3(1 - prog, 1 - prog, 1 - prog);
 
         o.vertex = UnityObjectToClipPos(rv1);
