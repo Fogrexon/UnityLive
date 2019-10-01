@@ -1060,6 +1060,7 @@ GameObject:
   - component: {fileID: 624088735}
   - component: {fileID: 624088734}
   - component: {fileID: 624088733}
+  - component: {fileID: 624088737}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1147,6 +1148,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &624088737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 624088732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e8cad637a6e5504483213f1f55ff2a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LifeTime: 2
+  renderer: {fileID: 0}
 --- !u!4 &635689013 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2633414705886238734, guid: 52a7b5d764a273741b9600ab3e45043f,
@@ -1165,6 +1180,7 @@ GameObject:
   - component: {fileID: 689486747}
   - component: {fileID: 689486746}
   - component: {fileID: 689486745}
+  - component: {fileID: 689486749}
   m_Layer: 0
   m_Name: BurstEffect
   m_TagString: Untagged
@@ -1244,6 +1260,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &689486749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 689486744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e8cad637a6e5504483213f1f55ff2a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LifeTime: 2
+  renderer: {fileID: 0}
 --- !u!1001 &767373689
 PrefabInstance:
   m_ObjectHideFlags: 0
