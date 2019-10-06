@@ -20,6 +20,7 @@ public class MusicData
 public class Note
 {
     public int type;
+    public float time;
     public Vector2 pos;
 }
 public class LoadMusicData : MonoBehaviour
@@ -30,7 +31,12 @@ public class LoadMusicData : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        string json = File.ReadAllText(Application.dataPath + "/SongData/Firefly.json");
+        try{
+            TextAsset file = Resources.Load("Firefly") as TextAsset;
+            string json = file.ToString();
+        //string json = File.ReadAllText(Application.dataPath + "/SongData/Firefly.json");
+        //OVRDebugConsole.instance.AddMessage("Hello JSON",Color.white);
+        
         MusicData md = JsonUtility.FromJson<MusicData>(json);
         StateHolder.SongName = md.MusicName;
         StateHolder.BPM = md.BPM;
@@ -38,6 +44,11 @@ public class LoadMusicData : MonoBehaviour
         StateHolder.NotesDataL = md.notesL;
         StateHolder.NotesDataR = md.notesR;
         GetComponent<NotesController>().Initialize();
+        }
+        catch(Exception e){
+            
+        OVRDebugConsole.instance.AddMessage(e.Message,Color.white);
+        }
     }
 }
 

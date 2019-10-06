@@ -6,6 +6,7 @@ Shader "Custom/Live/MusicSky/SkyBox"
 {
     Properties
     {
+        _MainTex("MainTexture", 2D) = "white"{}
         _MainColor("Main Color", Color) = (1.0,1.0,1.0,1.0)
         _DawnColor("Dawn Color", Color) = (1.0,1.0,1.0,1.0)
     }
@@ -41,6 +42,7 @@ Shader "Custom/Live/MusicSky/SkyBox"
 
             half4 _MainColor;
             half4 _DawnColor;
+            sampler2D _MainTex;
 
             v2f vert (appdata v)
             {
@@ -55,7 +57,7 @@ Shader "Custom/Live/MusicSky/SkyBox"
             fixed4 frag (v2f i) : SV_Target
             {
                 // sample the texture
-                fixed4 col = lerp(_MainColor, _DawnColor, saturate(abs(1.0 - 1.0/i.wpos.y)));
+                fixed4 col = tex2D(_MainTex, i.uv) * lerp(_MainColor, _DawnColor, saturate(abs(1.0 - 1.0/i.wpos.y)));
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;

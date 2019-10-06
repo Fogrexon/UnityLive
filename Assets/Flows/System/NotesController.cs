@@ -11,8 +11,10 @@ public class NotesController : MonoBehaviour
     public Transform handR;
     float bpm;
     float delta;
-    public int generatePos;
-    public int endPos;
+    public int generatePosL;
+    public int endPosL;
+    public int generatePosR;
+    public int endPosR;
     AudioSource source;
     NotesViewer nv;
     public void Initialize()
@@ -24,33 +26,41 @@ public class NotesController : MonoBehaviour
         nv = GetComponent<NotesViewer>();
         nv.Initialize();
         nv.GenerateNoteObjects();
-        bpm = StateHolder.BPM;
-        delta = 60f / bpm;
         source = GetComponent<AudioSource>();
-        generatePos = 0;
-        endPos = 0;
+        generatePosL = 0;
+        endPosL = 0;
+        generatePosR = 0;
+        endPosR = 0;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        float t = Mathf.Max(source.time - StateHolder.Offset, 0.0f);
-        int gp2 = Mathf.Min(Mathf.FloorToInt((t + 10f) / delta), notesdataL.Length);
-        if(gp2 != generatePos)
+        float t = source.time;// - StateHolder.Offset / 10000f;
+        while(generatePosL < notesdataL.Length && source.time + 10f > notesdataL[generatePosL].time)
         {
-            generatePos = gp2;
+            generatePosL ++;
         }
-        int ep2 = Mathf.Min(Mathf.FloorToInt(t / delta), notesdataL.Length);
-        if(ep2 < notesdataL.Length && ep2 != endPos)
+        while(endPosL < notesdataL.Length && source.time > notesdataL[endPosL].time)
         {
-            CheckNotes(endPos);
-            endPos = ep2;
+            CheckNotesL(endPosL);
+            endPosL ++;
         }
-        nv.MoveNotes(endPos, generatePos, t, delta);
+        nv.MoveNotesL(endPosL, generatePosL, t);
+        while(generatePosR < notesdataR.Length && source.time + 10f > notesdataR[generatePosR].time)
+        {
+            generatePosR ++;
+        }
+        while(endPosR < notesdataR.Length && source.time > notesdataR[endPosR].time)
+        {
+            CheckNotesR(endPosR);
+            endPosR ++;
+        }
+        nv.MoveNotesR(endPosR, generatePosR, t);
     }
 
-    void CheckNotes(int epos)
+    void CheckNotesL(int epos)
     {
         if(notesdataL[epos].type != 0){
             if(Vector2.Distance(new Vector2(handL.position.x,handL.position.y), notesdataL[epos].pos) < 0.3f)
@@ -58,12 +68,16 @@ public class NotesController : MonoBehaviour
                 score += 100;
             }
         }
+        nv.DestroyNotesL(epos);
+    }
+    void CheckNotesR(int epos)
+    {
         if(notesdataR[epos].type != 0){
             if(Vector2.Distance(new Vector2(handR.position.x,handR.position.y), notesdataR[epos].pos) < 0.3f)
             {
                 score += 100;
             }
         }
-        nv.DestroyNotes(epos);
+        nv.DestroyNotesR(epos);
     }
 }
