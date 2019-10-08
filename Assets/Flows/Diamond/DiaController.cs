@@ -44,7 +44,7 @@ public class DiaController : MonoBehaviour
         for(int i=0;i<childCount;i++)
         {
             this.transform.GetChild(i).transform.position = childTransform[i].position + new Vector3(0.0f,y,0.0f);
-            this.transform.GetChild(i).transform.localScale = childTransform[i].scale * (1.0f + volume * 100.0f);
+            this.transform.GetChild(i).transform.localScale = childTransform[i].scale * (1.0f + volume * 10.0f);
             this.transform.GetChild(i).transform.Rotate(Vector3.up * Time.deltaTime * 30.0f, Space.World);
         }
     }

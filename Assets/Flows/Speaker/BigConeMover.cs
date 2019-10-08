@@ -31,7 +31,7 @@ public class BigConeMover : MonoBehaviour
         AudioListener.GetOutputData(waveData, 1);
         volume /= 2.0f;
         volume += waveData.Select(x => x*x).Sum() / waveData.Length * 0.5f;
-        this.transform.localPosition = childTransform.localPosition + new Vector3(0.0f,volume*100f,0.0f);
+        this.transform.localPosition = childTransform.localPosition + new Vector3(0.0f,volume*10f,0.0f);
     }
 }
 

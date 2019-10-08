@@ -41,7 +41,7 @@ public class JujiController : MonoBehaviour
         volume /= 2.0f;
         volume += waveData.Select(x => x*x).Sum() / waveData.Length * 0.5f;
         Vector3 b = new Vector3(2f,2f,2f);
-        Matrix4x4 mat = Matrix4x4.Scale(b - new Vector3(volume, volume, volume)*150f) * Translator.Rotate(rot);
+        Matrix4x4 mat = Matrix4x4.Scale(b - new Vector3(volume, volume, volume)*8f) * Translator.Rotate(rot);
         for(int i=0;i<childCount;i++)
         {
             childTransform[i].trans.localPosition = (Vector3)(mat * childTransform[i].position);

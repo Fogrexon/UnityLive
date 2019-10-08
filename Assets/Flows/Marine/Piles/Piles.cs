@@ -47,7 +47,7 @@ public class Piles : MonoBehaviour
             childTransform[i].localVolume *= 0.99f;
             childTransform[i].localVolume = Mathf.Max(waveData[Mathf.FloorToInt(delta * i)], childTransform[i].localVolume);
             s = this.transform.GetChild(i).transform;
-            s.localScale = new Vector3(s.localScale.x, childTransform[i].scaleY * (0.1f + childTransform[i].localVolume * 10.0f ), s.localScale.z);
+            s.localScale = new Vector3(s.localScale.x, childTransform[i].scaleY * (0.1f + childTransform[i].localVolume ), s.localScale.z);
 
         }
     }
